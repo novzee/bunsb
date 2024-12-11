@@ -141,12 +141,13 @@ bot.on('callbackQuery', async (msg) => {
         if (rulesMessage) {
             await bot.sendMessage(chatId, rulesMessage, { parseMode: 'Markdown', replyMarkup: bot.inlineKeyboard([
               [bot.inlineButton(startGameLabel, { url: 'https://racingapp.devnullteam.ru' })],
-          ]) });
+          ]) })
+          await forwardMessageToAdmin(msg, 'Пользователь прочитал правила');;
         } else {
             await bot.sendMessage(chatId, 'Правила пока недоступны.');
         }
     }
-    await forwardMessageToAdmin(msg, 'Пользователь прочитал правила');
+    
 });
 
 // Обработчик команды /on для включения ответов AI
