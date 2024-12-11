@@ -1,5 +1,6 @@
 import TeleBot from 'telebot';
 import fs from 'fs';
+import schedule from 'node-schedule';
 
 const bot = new TeleBot(process.env.TELEGRAM_BOT_TOKEN);
 
@@ -48,4 +49,4 @@ schedule.scheduleJob('0 */2 * * *', () => {
 });
 
 // Запуск бота
-export default bot
+export default bot;
