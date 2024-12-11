@@ -78,4 +78,4 @@ bot.on("callback_query", (query) => {
  presto
 });
 
-bot.start();
+export default bot
