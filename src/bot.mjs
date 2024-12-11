@@ -1,5 +1,5 @@
-const TeleBot = require('telebot');
-const schedule = require('node-schedule');
+import TeleBot from 'telebot';
+import schedule from 'node-schedule';
 
 // Инициализация бота
 const bot = new TeleBot(process.env.TELEGRAM_BOT_TOKEN);
@@ -42,4 +42,6 @@ schedule.scheduleJob('0 */2 * * *', async () => {
   }
 });
 
+// Запуск бота
+bot.start();
 export default bot;
