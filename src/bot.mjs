@@ -65,6 +65,4 @@ schedule.scheduleJob('*/2 * * * *', async () => {
   }
 });
 
-// Запуск бота
-bot.start();
 export default bot;
