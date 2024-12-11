@@ -9,6 +9,7 @@
     "tunnel": "cloudflared tunnel --url http://localhost:3000"
   },
   "dependencies": {
+    "@mistralai/mistralai": "^1.3.5",
     "node-schedule": "^2.1.1",
     "telebot": "^1.4.1",
     "telebot-vercel": "^1.0.1"
