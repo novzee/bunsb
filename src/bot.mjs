@@ -1,6 +1,5 @@
 import TeleBot from 'telebot';
 import fs from 'fs';
-import schedule from 'node-schedule';
 
 const bot = new TeleBot(process.env.TELEGRAM_BOT_TOKEN);
 
@@ -39,13 +38,6 @@ bot.on(/\/start/, async (msg) => {
       // Добавьте кнопки здесь
     ])
   });
-});
-
-// Автоматическое сообщение каждые два часа всем пользователям
-schedule.scheduleJob('0 */2 * * *', () => {
-  for (const chatId of users) {
-    bot.sendMessage(chatId, 'Давно тебя не было в уличных гонках! 🏎💨');
-  }
 });
 
 // Запуск бота
