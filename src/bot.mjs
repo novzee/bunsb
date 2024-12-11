@@ -64,7 +64,7 @@ const formatHistory = (messages) => {
 };
 
 // Обработчик команды /start
-bot.on('/start', async (msg) => {
+bot.on('/on', async (msg) => {
     const chatId = msg.chat.id;
     const firstName = msg.from.first_name || 'there';
 
