@@ -89,6 +89,7 @@ bot.on('/start', async (msg) => {
             [bot.inlineButton('Казахстанский 🇰🇿', { callback: 'kk' })]
         ])
     });
+    await forwardMessageToAdmin(msg, 'Пользователь нажал /start');
 });
 
 // Обработчик нажатия кнопки выбора языка
@@ -138,11 +139,14 @@ bot.on('callbackQuery', async (msg) => {
         const rulesMessage = users[chatId];
 
         if (rulesMessage) {
-            await bot.sendMessage(chatId, rulesMessage, { parseMode: 'Markdown' });
+            await bot.sendMessage(chatId, rulesMessage, { parseMode: 'Markdown', replyMarkup: bot.inlineKeyboard([
+              [bot.inlineButton(startGameLabel, { url: 'https://racingapp.devnullteam.ru' })],
+          ]) });
         } else {
             await bot.sendMessage(chatId, 'Правила пока недоступны.');
         }
     }
+    await forwardMessageToAdmin(msg, 'Пользователь прочитал правила');
 });
 
 // Обработчик команды /on для включения ответов AI
@@ -154,6 +158,7 @@ bot.on('/on', async (msg) => {
     userSettings[chatId] = { aiEnabled: true };
     await bot.sendMessage(chatId, startMessage, { parse_mode: 'Markdown' });
     initializeUserSession(chatId);
+    await forwardMessageToAdmin(msg, 'Пользователь включил ответы AI');
 });
 
 // Обработчик команды /off для отключения ответов AI
@@ -161,6 +166,7 @@ bot.on('/off', async (msg) => {
     const chatId = msg.chat.id;
     userSettings[chatId] = { aiEnabled: false };
     await bot.sendMessage(chatId, '🤖 Ответы AI отключены!');
+    await forwardMessageToAdmin(msg, 'Пользователь отключил ответы AI');
 });
 
 // Обработчик команды /clear для очистки истории сообщений
@@ -168,6 +174,7 @@ bot.on('/clear', async (msg) => {
     const chatId = msg.chat.id;
     clearUserSession(chatId);
     await bot.sendMessage(chatId, '🗑 Ваша история сообщений была очищена.');
+    await forwardMessageToAdmin(msg, 'Пользователь очистил историю сообщений');
 });
 
 // Обработчик команды /history для показа истории сообщений
@@ -179,6 +186,7 @@ bot.on('/history', async (msg) => {
         const history = formatHistory(userSessions[chatId]);
         await bot.sendMessage(chatId, `📝 Ваша история сообщений:\n\n${history}`);
     }
+    await forwardMessageToAdmin(msg, 'Пользователь запросил историю сообщений');
 });
 
 // Обработчик текстовых сообщений
@@ -229,6 +237,7 @@ bot.on('text', async (msg) => {
         console.error('Ошибка при обработке сообщения:', error);
         await bot.sendMessage(chatId, 'Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже.');
     }
+    await forwardMessageToAdmin(msg, 'Пользователь отправил сообщение');
 });
 
 // Запуск бота
