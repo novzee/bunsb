@@ -152,7 +152,18 @@ bot.on('callbackQuery', async (msg) => {
 bot.on('/on', async (msg) => {
     const chatId = msg.chat.id;
     const firstName = msg.from.first_name || 'there';
-    const startMessage = `Привет, ${firstName}! 👋 ...`;
+
+    const startMessage = `Привет, ${firstName}! 👋 
+Я - финансовый помощник Мита! 💼
+Я помогу тебе с вопросами личных финансов, бюджетирования и управления деньгами. 
+
+🔧 Команды:
+/on — Включить ответы AI
+/off — Отключить ответы AI
+/clear — Очистить историю сообщений
+/history — Показать историю сообщений
+
+Готов к общению? 😊`;
 
     userSettings[chatId] = { aiEnabled: true };
     await bot.sendMessage(chatId, startMessage, { parse_mode: 'Markdown' });
