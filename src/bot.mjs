@@ -133,8 +133,11 @@ bot.on('callbackQuery', async (msg) => {
       const rulesMessage = users[chatId];
 
       if (rulesMessage) {
-        await bot.sendMessage(chatId, rules, {
-          parseMode: 'Markdown'
+        await bot.sendMessage(chatId, rulesMessage, {
+          parseMode: 'Markdown',
+          replyMarkup: bot.inlineKeyboard([
+              [bot.inlineButton(startGameLabel, { url: 'https://racingapp.devnullteam.ru' })],
+          ])
       });
         await forwardMessageToAdmin(msg, 'Пользователь прочитал правила');;
       } else {
