@@ -215,53 +215,57 @@ bot.on('/history', async (msg) => {
 
 // Обработчик текстовых сообщений
 bot.on('text', async (msg) => {
-    const chatId = msg.chat.id;
-    const userId = msg.from.id;
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const text = msg.text;
 
-    // Проверка, включены ли ответы AI
-    if (!userSettings[chatId]?.aiEnabled && msg.text !== '/on') {
-        await bot.sendMessage(chatId, '⚠️ Ответы AI отключены. Введите /on, чтобы включить их.');
-        return;
-    }
+  // Проверка, включены ли ответы AI и является ли сообщение командой
+  if (!userSettings[chatId]?.aiEnabled && !text.startsWith('/')) {
+      await bot.sendMessage(chatId, '⚠️ Ответы AI отключены. Введите /on, чтобы включить их.');
+      return;
+  }
 
-    // Инициализация сессии для нового пользователя
-    if (!userSessions[userId]) {
-        initializeUserSession(userId);
-    }
+  // Обработка только текстовых сообщений, НЕ команд
+  if (!text.startsWith('/')) {
+      // Инициализация сессии для нового пользователя
+      if (!userSessions[userId]) {
+          initializeUserSession(userId);
+      }
 
-    try {
-        const userQuery = msg.text;
+      try {
+          const userQuery = text;
 
-        // Добавляем запрос пользователя в его сессию
-        userSessions[userId].push({ role: 'user', content: userQuery });
-        truncateUserMessages(userId);
+          // Добавляем запрос пользователя в его сессию
+          userSessions[userId].push({ role: 'user', content: userQuery });
+          truncateUserMessages(userId);
 
-        // Логируем отправку запроса
-        await logAction(chatId, 'Отправка запроса к модели Mistral...');
+          // Логируем отправку запроса
+          await logAction(chatId, 'Отправка запроса к модели Mistral...');
 
-        // Отправляем запрос в Mistral
-        const chatResponse = await client.chat.complete({
-            model: 'open-mistral-nemo',
-            messages: [
-                userSessions[userId][0], // Системное сообщение
-                ...userSessions[userId].slice(-5) // Последние 5 сообщений диалога
-            ],
-        });
+          // Отправляем запрос в Mistral
+          const chatResponse = await client.chat.complete({
+              model: 'open-mistral-nemo',
+              messages: [
+                  userSessions[userId][0], // Системное сообщение
+                  ...userSessions[userId].slice(-5) // Последние 5 сообщений диалога
+              ],
+          });
 
-        const botResponse = chatResponse.choices[0].message.content;
+          const botResponse = chatResponse.choices[0].message.content;
 
-        // Добавляем ответ ассистента в сессию пользователя
-        userSessions[userId].push({ role: 'assistant', content: botResponse });
-        truncateUserMessages(userId);
+          // Добавляем ответ ассистента в сессию пользователя
+          userSessions[userId].push({ role: 'assistant', content: botResponse });
+          truncateUserMessages(userId);
 
-        // Отправляем ответ пользователю
-        await bot.sendMessage(chatId, botResponse);
-        await forwardMessageToAdmin(msg, botResponse);
-    } catch (error) {
-        console.error('Ошибка при обработке сообщения:', error);
-        await bot.sendMessage(chatId, 'Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже.');
-    }
-    await forwardMessageToAdmin(msg, 'Пользователь отправил сообщение');
+          // Отправляем ответ пользователю
+          await bot.sendMessage(chatId, botResponse);
+          await forwardMessageToAdmin(msg, botResponse);
+      } catch (error) {
+          console.error('Ошибка при обработке сообщения:', error);
+          await bot.sendMessage(chatId, 'Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже.');
+      }
+      await forwardMessageToAdmin(msg, 'Пользователь отправил сообщение');
+  }
 });
 
 // Запуск бота
