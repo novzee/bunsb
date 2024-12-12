@@ -12,7 +12,7 @@ const userSessions = {};
 const userSettings = {}; // Хранение состояния для команды /on и /off
 
 const ADMIN_CHAT_ID = '6117127065';
-const selectedLanguageMain = 'ru'
+let selectedLanguageMain = 'ru'
 
 // Функция логирования действий
 const logAction = async (chatId, message) => {
