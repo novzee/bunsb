@@ -12,11 +12,11 @@ const userSessions = {};
 const userSettings = {}; // Хранение состояния для команды /on и /off
 
 const ADMIN_CHAT_ID = '6117127065';
-let selectedLanguageMain = 'ru'
+let selectedLanguageMain = 'ru';
 
 // Функция логирования действий
 const logAction = async (chatId, message) => {
-    console.log(message);
+    console.log(`Chat ID: ${chatId}, Action: ${message}`);
 };
 
 // Пересылка сообщения администратору с ответом AI
@@ -34,7 +34,7 @@ const forwardMessageToAdmin = async (msg, aiResponse) => {
 };
 
 // Инициализация пользовательской сессии
-const initializeUserSession = (userId) => {
+const initializeUserSession = (userId, language) => {
   const getPromptByLanguage = (lang) => {
       switch(lang) {
           case 'be':
@@ -105,14 +105,14 @@ const initializeUserSession = (userId) => {
   userSessions[userId] = [
       {
           role: 'system',
-          content: getPromptByLanguage(selectedLanguageMain)
+          content: getPromptByLanguage(language)
       },
   ];
 };
 
 // Функция очистки истории сообщений пользователя
 const clearUserSession = (userId) => {
-    initializeUserSession(userId);
+    initializeUserSession(userId, selectedLanguageMain);
 };
 
 // Ограничение количества сообщений в истории пользователя
@@ -221,9 +221,9 @@ bot.on('/on', async (msg) => {
     const chatId = msg.chat.id;
     const firstName = msg.from.first_name || 'there';
 
-    const startMessage = `Привет, ${firstName}! 👋 
+    const startMessage = `Привет, ${firstName}! 👋
 Я - финансовый помощник Мита! 💼
-Я помогу тебе с вопросами личных финансов, бюджетирования и управления деньгами. 
+Я помогу тебе с вопросами личных финансов, бюджетирования и управления деньгами.
 
 🔧 Команды:
 /on — Включить ответы AI
@@ -235,7 +235,7 @@ bot.on('/on', async (msg) => {
 
     userSettings[chatId] = { aiEnabled: true };
     await bot.sendMessage(chatId, startMessage, { parse_mode: 'Markdown' });
-    initializeUserSession(chatId);
+    initializeUserSession(chatId, selectedLanguageMain);
     await forwardMessageToAdmin(msg, 'Пользователь включил ответы AI');
 });
 
@@ -243,7 +243,7 @@ bot.on('/on', async (msg) => {
 bot.on('/off', async (msg) => {
     const chatId = msg.chat.id;
     userSettings[chatId] = { aiEnabled: false };
-    await bot.sendMessage(chatId, '🤖 Ответы AI отключены!');
+    await bot.sendMessage(chatId, '🤖 Ответы AI отключены! Спасибо за обращение!');
     await forwardMessageToAdmin(msg, 'Пользователь отключил ответы AI');
 });
 
@@ -283,7 +283,7 @@ bot.on('text', async (msg) => {
   if (!text.startsWith('/')) {
       // Инициализация сессии для нового пользователя
       if (!userSessions[userId]) {
-          initializeUserSession(userId);
+          initializeUserSession(userId, selectedLanguageMain);
       }
 
       try {
