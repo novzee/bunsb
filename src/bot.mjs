@@ -1,7 +1,5 @@
 import TeleBot from 'telebot';
 import { Mistral } from '@mistralai/mistralai';
-import fs from 'fs';
-import path from 'path';
 
 // Инициализация бота
 const bot = new TeleBot(process.env.TELEGRAM_BOT_TOKEN);
@@ -68,7 +66,7 @@ const initializeUserSession = (userId, language) => {
 Қаржылық тұжырымдамаларды қарапайым тілмен түсіндіру.
 Ақшаны басқару бойынша практикалық кеңестер беру.
 Еркін диалог жүргізу.
-Смайліктер мен достық үнді қолдану.
+Смайликтер мен достық үнді қолдану.
 Егер пайдаланушы сенен сұрауға болатын нәрсе туралы білмесе, хабарлама соңында 3 идеяға дейін сирек тармақтармен жазып, идеяларды ұсыну.
 
 Тыйым салынған:
@@ -151,12 +149,7 @@ bot.on('/start', async (msg) => {
     // Сообщение с кнопками выбора языка
     const languageSelectionMessage = `Привет, ${firstName}! 🎉\n\nПожалуйста, выбери язык:`;
 
-    // Чтение изображения из файла
-    const imagePath = path.join(__dirname, 'first.png');
-    const image = fs.readFileSync(imagePath);
-
-    await bot.sendPhoto(chatId, image, {
-        caption: languageSelectionMessage,
+    await bot.sendMessage(chatId, languageSelectionMessage, {
         parseMode: 'Markdown',
         replyMarkup: bot.inlineKeyboard([
             [bot.inlineButton('Русский 🇷🇺', { callback: 'ru' })],
