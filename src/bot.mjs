@@ -269,24 +269,48 @@ bot.on('/on', async (msg) => {
 // Обработчик команды /off для отключения ответов AI
 bot.on('/off', async (msg) => {
     const chatId = msg.chat.id;
+    let offMessage = '';
+    if (selectedLanguageMain === 'ru') {
+        offMessage = '🤖 Ответы AI отключены! Спасибо за обращение!';
+    } else if (selectedLanguageMain === 'be') {
+        offMessage = '🤖 Адказы AI адключаны! Дзякуй за зварот!';
+    } else if (selectedLanguageMain === 'kk') {
+        offMessage = '🤖 AI жауаптары өшірілді! Көріскеніңіз үшін рахмет!';
+    }
     userSettings[chatId] = { aiEnabled: false };
-    await bot.sendMessage(chatId, '🤖 Ответы AI отключены! Спасибо за обращение!');
+    await bot.sendMessage(chatId, offMessage);
     await forwardMessageToAdmin(msg, 'Пользователь отключил ответы AI');
 });
 
 // Обработчик команды /clear для очистки истории сообщений
 bot.on('/clear', async (msg) => {
     const chatId = msg.chat.id;
+    let clearMessage = '';
+    if (selectedLanguageMain === 'ru') {
+        clearMessage = '🗑 Ваша история сообщений была очищена.';
+    } else if (selectedLanguageMain === 'be') {
+        clearMessage = '🗑 Ваша гісторыя паведамленняў была ачышчана.';
+    } else if (selectedLanguageMain === 'kk') {
+        clearMessage = '🗑 Сіздің хабарлар тарихыңыз тазаланды.';
+    }
     clearUserSession(chatId);
-    await bot.sendMessage(chatId, '🗑 Ваша история сообщений была очищена.');
+    await bot.sendMessage(chatId, clearMessage);
     await forwardMessageToAdmin(msg, 'Пользователь очистил историю сообщений');
 });
 
 // Обработчик команды /history для показа истории сообщений
 bot.on('/history', async (msg) => {
     const chatId = msg.chat.id;
+    let noHistoryMessage = '';
+    if (selectedLanguageMain === 'ru') {
+        noHistoryMessage = 'У вас пока нет истории сообщений.';
+    } else if (selectedLanguageMain === 'be') {
+        noHistoryMessage = 'У вас пакуль няма гісторыі паведамленняў.';
+    } else if (selectedLanguageMain === 'kk') {
+        noHistoryMessage = 'Сіздің хабарлар тарихыңыз әлі жоқ.';
+    }
     if (!userSessions[chatId] || userSessions[chatId].length <= 1) {
-        await bot.sendMessage(chatId, 'У вас пока нет истории сообщений.');
+        await bot.sendMessage(chatId, noHistoryMessage);
     } else {
         const history = formatHistory(userSessions[chatId]);
         await bot.sendMessage(chatId, `📝 Ваша история сообщений:\n\n${history}`);
@@ -302,7 +326,15 @@ bot.on('text', async (msg) => {
 
   // Проверка, включены ли ответы AI и является ли сообщение командой
   if (!userSettings[chatId]?.aiEnabled && !text.startsWith('/')) {
-      await bot.sendMessage(chatId, '⚠️ Ответы AI отключены. Введите /on, чтобы включить их.');
+      let aiDisabledMessage = '';
+      if (selectedLanguageMain === 'ru') {
+          aiDisabledMessage = '⚠️ Ответы AI отключены. Введите /on, чтобы включить их.';
+      } else if (selectedLanguageMain === 'be') {
+          aiDisabledMessage = '⚠️ Адказы AI адключаны. Увядзіце /on, каб уключыць іх.';
+      } else if (selectedLanguageMain === 'kk') {
+          aiDisabledMessage = '⚠️ AI жауаптары өшірілген. /on жазып, қосу үшін енгізіңіз.';
+      }
+      await bot.sendMessage(chatId, aiDisabledMessage);
       return;
   }
 
@@ -343,7 +375,15 @@ bot.on('text', async (msg) => {
           await forwardMessageToAdmin(msg, botResponse);
       } catch (error) {
           console.error('Ошибка при обработке сообщения:', error);
-          await bot.sendMessage(chatId, 'Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже.');
+          let errorMessage = '';
+          if (selectedLanguageMain === 'ru') {
+              errorMessage = 'Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже.';
+          } else if (selectedLanguageMain === 'be') {
+              errorMessage = 'Адбылася памылка пры апрацоўцы вашага запыту. Калі ласка, паспрабуйце пазней.';
+          } else if (selectedLanguageMain === 'kk') {
+              errorMessage = 'Сіздің сұрауыңызды өңдеу кезінде қате орын алды. Өтінеміз, кейінірек қайталап көріңіз.';
+          }
+          await bot.sendMessage(chatId, errorMessage);
       }
       await forwardMessageToAdmin(msg, 'Пользователь отправил сообщение');
   }
