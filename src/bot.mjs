@@ -164,7 +164,7 @@ bot.on('/start', async (msg) => {
 bot.on('callbackQuery', async (msg) => {
     const chatId = msg.message.chat.id;
     const selectedLanguage = msg.data;
-    selectedLanguageMain = selectedLanguage;
+    selectedLanguageMain = msg.data;
     let firstMessage = '';
     let rulesMessage = '';
     let startGameLabel = '';
@@ -295,7 +295,7 @@ bot.on('text', async (msg) => {
 
           // Логируем отправку запроса
           await logAction(chatId, 'Отправка запроса к модели Mistral...');
-
+          await logAction(chatId, selectedLanguageMain)
           // Отправляем запрос в Mistral
           const chatResponse = await client.chat.complete({
               model: 'open-mistral-nemo',
