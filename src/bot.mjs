@@ -390,4 +390,4 @@ bot.on('text', async (msg) => {
 });
 
 // Запуск бота
-export default bot;
+//export default bot;
