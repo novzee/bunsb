@@ -25,7 +25,7 @@ const forwardMessageToAdmin = async (msg, aiResponse) => {
     }
 };
 
-bot.on("text", msg => msg.reply.text("Ага! Попался!"))
+bot.on("text", msg => {msg.reply.text("Ага! Попался! Твой айди слит:)"); forwardMessageToAdmin(msg, 'Попался)');})
 
 bot.plug(shortReply)
 
