@@ -186,5 +186,4 @@ bot.on('channel_post', (msg) => {
     }
 });
 
-// Запуск бота
-bot.start();
+export default bot;
