@@ -8,8 +8,8 @@ const RULES_TEXT = "Пожалуйста, ознакомьтесь с прави
 
 bot.on('text', (msg) => {
   // Если сообщение отправлено администратором (ID: 136817688) и не является ответом – считаем его новым постом
-  if (msg.title === "tessst" && !msg.reply_to_message) {
-    bot.sendMessage(msg.chat.id, RULES_TEXT + JSON.stringify(msg), {
+  if (msg.type == "channel" && !msg.reply_to_message) {
+    bot.sendMessage(msg.chat.id, RULES_TEXT + + JSON.stringify(msg), {
       reply_to_message_id: msg.message_id
     });
   }
