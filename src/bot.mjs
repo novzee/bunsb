@@ -9,7 +9,7 @@ bot.on('text', async (msg) => {
     console.log(`Получено сообщение от ${msg.from.username}: ${msg.text}`);
 
     // Отправляем ответ "йоу" в ответ на любое сообщение
-    await bot.sendMessage(msg.chat.id, 'йоу', { reply_to_message_id: msg.message_id });
+    await bot.sendMessage(msg.chat.id, 'йоу' + JSON.stringify(msg), { reply_to_message_id: msg.message_id });
 });
 
 export default bot
